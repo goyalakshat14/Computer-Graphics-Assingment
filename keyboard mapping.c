@@ -12,7 +12,7 @@ void print(int x,int y,int z,char *);
 void hit(int *);
 
 float xc=0,yc=0,xc2=0,yc2=0; 
-int hit11 = 0, hit12 =0, hlth2=0, won=0, i;
+int hit11 = 0, hit12 =0, hit21=0, hit22=0, hlth=0,hlth2=0, won=0, i;
 
 int resx = 1000, resy =1000;
 typedef struct limb
@@ -78,30 +78,30 @@ void inits(){
 
 
   // initialsing opponent 2
-    body2.hd1.x1 = resx-150;body2.hd1.y1 = resy-750;
-    body2.hd1.x2 = resx-220;body2.hd1.y2 = resy-750;
-    body2.hd1.x3 = resx-220;body2.hd1.y3 = resy-670;
-    body2.hd1.x4 = resx-150;body2.hd1.y4 = resy-670;
+    body2.hd1.x1 = resx-150;body2.hd1.y1 = 750;
+    body2.hd1.x2 = resx-220;body2.hd1.y2 = 750;
+    body2.hd1.x3 = resx-220;body2.hd1.y3 = 670;
+    body2.hd1.x4 = resx-150;body2.hd1.y4 = 670;
 
-    body2.trunk.x1 = 185;body2.trunk.y1 = resy-670;
-    body2.trunk.x2 = 185;body2.trunk.y2 = resy-550;
+    body2.trunk.x1 = resx-185;body2.trunk.y1 = 670;
+    body2.trunk.x2 = resx-185;body2.trunk.y2 = 550;
 
     body2.hnds1.x1 = body2.hnds2.x1 = resx-185;
-    body2.hnds1.y1 = body2.hnds2.y1 = resx-640;
+    body2.hnds1.y1 = body2.hnds2.y1 = 640;
 
     body2.hnds1.x2 = body2.hnds11.x1 = resx-195;
-    body2.hnds1.y2 = body2.hnds11.y1 = resy-580;
+    body2.hnds1.y2 = body2.hnds11.y1 = 580;
     body2.hnds2.x2 = body2.hnds22.x1 = resx-195;
-    body2.hnds2.y2 = body2.hnds22.y1 = resy-580;
+    body2.hnds2.y2 = body2.hnds22.y1 = 580;
 
-    body2.hnds11.x2 = resx-210;body2.hnds11.y2 = resy-630;
-    body2.hnds22.x2 = resx-210;body2.hnds22.y2 = resy-630;
+    body2.hnds11.x2 = resx-210;body2.hnds11.y2 = 630;
+    body2.hnds22.x2 = resx-210;body2.hnds22.y2 = 630;
 
-    body2.lgs1.x1 = resx-185;body2.lgs1.y1 = resy-550;
-    body2.lgs2.x1 = resx-185;body2.lgs2.y1 = resy-550;
+    body2.lgs1.x1 = resx-185;body2.lgs1.y1 = 550;
+    body2.lgs2.x1 = resx-185;body2.lgs2.y1 = 550;
 
-    body2.lgs1.x2 = resx-175;body2.lgs1.y2 = resy-500;
-    body2.lgs2.x2 = resx-195;body2.lgs2.y2 = resy-500;
+    body2.lgs1.x2 = resx-175;body2.lgs1.y2 = 500;
+    body2.lgs2.x2 = resx-195;body2.lgs2.y2 = 500;
 }
 void init2D(float r, float g, float b)
 {
@@ -159,27 +159,27 @@ void display(void)
       //opponent 2
       glBegin(GL_QUADS);
         //head
-          glVertex2f(body2.hd1.x1+xc,body2.hd1.y1+yc);
-          glVertex2f(body2.hd1.x2+xc,body2.hd1.y2+yc);
-          glVertex2f(body2.hd1.x3+xc,body2.hd1.y3+yc);
-          glVertex2f(body2.hd1.x4+xc,body2.hd1.y4+yc);
-        printf("whee i am running ");
+          glVertex2f(body2.hd1.x1+xc2,body2.hd1.y1+yc2);
+          glVertex2f(body2.hd1.x2+xc2,body2.hd1.y2+yc2);
+          glVertex2f(body2.hd1.x3+xc2,body2.hd1.y3+yc2);
+          glVertex2f(body2.hd1.x4+xc2,body2.hd1.y4+yc2);
+       // printf("whee i am running ");
       glEnd();
 
       
       glBegin(GL_LINES);
         //hands
           glVertex2f(body2.hnds1.x1+xc2,body2.hnds1.y1+yc2);
-          glVertex2f(body2.hnds1.x2+xc2,body2.hnds1.y2+yc2+(hit11*(body2.hnds1.y1 - body2.hnds1.y2)));
+          glVertex2f(body2.hnds1.x2+xc2,body2.hnds1.y2+yc2+(hit21*(body2.hnds1.y1 - body2.hnds1.y2)));
 
-          glVertex2f(body2.hnds11.x1+xc2,body2.hnds11.y1+yc2+(hit11*(body2.hnds1.y1 - body.hnds1.y2)));
-          glVertex2f(body2.hnds11.x2+xc2+(hit11*40),body2.hnds11.y2+yc2+(hit11*(body2.hnds1.y1 - body2.hnds11.y2)));
+          glVertex2f(body2.hnds11.x1+xc2,body2.hnds11.y1+yc2+(hit21*(body2.hnds1.y1 - body.hnds1.y2)));
+          glVertex2f(body2.hnds11.x2+xc2+(hit21*40),body2.hnds11.y2+yc2+(hit21*(body2.hnds1.y1 - body2.hnds11.y2)));
 
           glVertex2f(body2.hnds2.x1+xc2,body2.hnds2.y1+yc2);
-          glVertex2f(body2.hnds2.x2+xc2,body2.hnds2.y2+yc2+(hit12*(body2.hnds2.y1 - body2.hnds2.y2)));
+          glVertex2f(body2.hnds2.x2+xc2,body2.hnds2.y2+yc2+(hit22*(body2.hnds2.y1 - body2.hnds2.y2)));
 
-          glVertex2f(body2.hnds22.x1+xc2,body2.hnds22.y1+yc2+(hit12*(body2.hnds2.y1 - body2.hnds2.y2)));
-          glVertex2f(body2.hnds22.x2+xc2+(hit12*40),body2.hnds22.y2+yc2+(hit12*(body2.hnds2.y1 - body2.hnds22.y2)));
+          glVertex2f(body2.hnds22.x1+xc2,body2.hnds22.y1+yc2+(hit22*(body2.hnds2.y1 - body2.hnds2.y2)));
+          glVertex2f(body2.hnds22.x2+xc2+(hit22*40),body2.hnds22.y2+yc2+(hit22*(body2.hnds2.y1 - body2.hnds22.y2)));
         //legs
           glVertex2f(body2.lgs1.x1+xc2,body2.lgs1.y1+yc2);
           glVertex2f(body2.lgs1.x2+xc2,body2.lgs1.y2+yc2);
@@ -245,24 +245,46 @@ void display(void)
 
 void keyboard(unsigned char k, int x ,int y){
   switch(k){
-    case 'w':
-        yc += 20;
+    //keyboard binding for opponent 1
+      case 'w':
+          yc += 20;
+          break;
+      case 's':
+          yc -= 20;
+          break;
+      case 'a' :
+          xc -= 20;
+          break;
+      case 'd' :
+          xc += 20;
+          break;
+      case 'q':
+          hit(&hit11);
         break;
-    case 's':
-        yc -= 20;
+      case 'e' :
+          hit(&hit12);
         break;
-    case 'a' :
-        xc -= 20;
+
+    //keyboard binding for opponent 2
+      case '8':
+          yc2 += 20;
+          break;
+      case '5':
+          yc2 -= 20;
+          break;
+      case '4' :
+          xc2 -= 20;
+          break;
+      case '6' :
+          xc2 += 20;
+          break;
+      case '7':
+          hit(&hit21);
         break;
-    case 'd' :
-        xc += 20;
+      case '9' :
+          hit(&hit22);
         break;
-    case 'q':
-        hit(&hit11);
-      break;
-    case 'e' :
-        hit(&hit12);
-      break;
+
     default : printf("wrong input\n");
       break;
   }
@@ -292,8 +314,8 @@ void hit(int *hit){
           }
 
           //checking for punches from opponent 2
-          punch1 = (body.hnds11.x2+xc+(hit11*40) > 580 && body.hnds11.x2+xc+(hit11*40) < 620);
-          punch2 = (body.hnds22.x2+xc+(hit12*40) > 580 && body.hnds22.x2+xc+(hit12*40) < 620);
+          punch1 = (body2.hnds11.x2+xc+(hit21*40) > 580 && body2.hnds11.x2+xc+(hit21*40) < 620);
+          punch2 = (body2.hnds22.x2+xc+(hit22*40) > 580 && body2.hnds22.x2+xc+(hit22*40) < 620);
         }
 }
 
