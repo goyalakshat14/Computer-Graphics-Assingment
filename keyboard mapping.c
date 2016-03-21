@@ -249,11 +249,38 @@ void display(void)
       glEnd();
 
       if(won==1){
-        print(500,500,0,"player 1 won");
+        print(450,500,0,"player 1 won");
 
       }
       if(won ==2){
-        print(500,00,0,"player 2 won");
+        print(450,500,0,"player 2 won");
+      }
+
+      if(hit11){
+           printf("taking it back %d\n",i);
+            hit(&hit11);
+          i++;
+            glutTimerFunc(150,display,1);
+          
+        }
+      if(hit12){
+           printf("taking it back %d\n",i);
+            hit(&hit12);
+          i++;
+            glutTimerFunc(150,display,1);
+          
+        }
+      if(hit21){
+           printf("taking it back %d\n",i);
+            hit(&hit21);
+          i++;
+            glutTimerFunc(150,display,1);
+          
+      }
+      if(hit22){
+           //printf("taking it back %d\n",i);
+            hit(&hit22);
+            glutTimerFunc(150,display,1);    
       }
       glFlush();
 }
@@ -314,7 +341,8 @@ void keyboard(unsigned char k, int x ,int y){
     default : printf("wrong input\n");
       break;
   }
-  glutPostRedisplay(); 
+  glutPostRedisplay();
+  
 }
 
 void hit(int *hit){
@@ -335,7 +363,7 @@ void hit(int *hit){
       {
         won = 1;
         printf("opponent 1 won\n");
-          return;
+          //return;
         }
       }
 
@@ -348,7 +376,7 @@ void hit(int *hit){
       //printf("it was a hit\n");
       if (hlth==150)
       {
-        won = 1;
+        won = 2;
         printf("opponent 2 won\n");
       }
       //return;
