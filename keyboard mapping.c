@@ -10,11 +10,24 @@ void display(void);
 void keyboard(unsigned char k,int x, int y);
 void print(int x,int y,int z,char *);
 void hit(int *);
+void updatecol1();
+void updatecol2();
+
 
 float xc=0,yc=0,xc2=0,yc2=0; 
-int hit11 = 0, hit12 =0, hit21=0, hit22=0, hlth=0,hlth2=0, won=0, i;
+
+char keypressed;
+
+int hit11 = 0, hit12 =0, hit21=0, hit22=0, hlth=0, hlth2=0, won=0, i;
+
+//collision boundries of opponent 1
+float oppo1ColsnBndryx1 = 0 ,oppo1ColsnBndryy1 = 0, oppo1ColsnBndryx2 = 0,oppo1ColsnBndryy2 = 0;
+
+//collision boundries of opponent 2
+float oppo2ColsnBndryx1 = 0 ,oppo2ColsnBndryy1 = 0, oppo2ColsnBndryx2 = 0,oppo2ColsnBndryy2 = 0;
 
 int resx = 1000, resy =1000;
+
 typedef struct limb
 {
   int x1,y1,x2,y2;
@@ -76,6 +89,7 @@ void inits(){
     body.lgs1.x2 = 175;body.lgs1.y2 = 500;
     body.lgs2.x2 = 195;body.lgs2.y2 = 500;
 
+    updatecol1();
 
   // initialsing opponent 2
     body2.hd1.x1 = resx-150;body2.hd1.y1 = 750;
@@ -102,6 +116,8 @@ void inits(){
 
     body2.lgs1.x2 = resx-175;body2.lgs1.y2 = 500;
     body2.lgs2.x2 = resx-195;body2.lgs2.y2 = 500;
+
+    updatecol2();
 }
 void init2D(float r, float g, float b)
 {
@@ -126,7 +142,6 @@ void display(void)
           glVertex2f(body.hd1.x4+xc,body.hd1.y4+yc);
         //printf("whee i am running ");
       glEnd();
-
       
       glBegin(GL_LINES);
         //hands
@@ -173,13 +188,13 @@ void display(void)
           glVertex2f(body2.hnds1.x2+xc2,body2.hnds1.y2+yc2+(hit21*(body2.hnds1.y1 - body2.hnds1.y2)));
 
           glVertex2f(body2.hnds11.x1+xc2,body2.hnds11.y1+yc2+(hit21*(body2.hnds1.y1 - body.hnds1.y2)));
-          glVertex2f(body2.hnds11.x2+xc2+(hit21*40),body2.hnds11.y2+yc2+(hit21*(body2.hnds1.y1 - body2.hnds11.y2)));
+          glVertex2f(body2.hnds11.x2+xc2-(hit21*40),body2.hnds11.y2+yc2+(hit21*(body2.hnds1.y1 - body2.hnds11.y2)));
 
           glVertex2f(body2.hnds2.x1+xc2,body2.hnds2.y1+yc2);
           glVertex2f(body2.hnds2.x2+xc2,body2.hnds2.y2+yc2+(hit22*(body2.hnds2.y1 - body2.hnds2.y2)));
 
           glVertex2f(body2.hnds22.x1+xc2,body2.hnds22.y1+yc2+(hit22*(body2.hnds2.y1 - body2.hnds2.y2)));
-          glVertex2f(body2.hnds22.x2+xc2+(hit22*40),body2.hnds22.y2+yc2+(hit22*(body2.hnds2.y1 - body2.hnds22.y2)));
+          glVertex2f(body2.hnds22.x2+xc2-(hit22*40),body2.hnds22.y2+yc2+(hit22*(body2.hnds2.y1 - body2.hnds22.y2)));
         //legs
           glVertex2f(body2.lgs1.x1+xc2,body2.lgs1.y1+yc2);
           glVertex2f(body2.lgs1.x2+xc2,body2.lgs1.y2+yc2);
@@ -208,10 +223,10 @@ void display(void)
       
       glColor3f(0.0,1.0,1.0);
       glBegin(GL_QUADS);
-        glVertex2f(150,40);
+        glVertex2f(150+hlth,40);
         glVertex2f(300,40);
         glVertex2f(300,20);
-        glVertex2f(150,20);
+        glVertex2f(150+hlth,20);
       glEnd();      
       
       //health meter opponent 2
@@ -244,39 +259,50 @@ void display(void)
 }
 
 void keyboard(unsigned char k, int x ,int y){
+  keypressed = k;
   switch(k){
     //keyboard binding for opponent 1
       case 'w':
           yc += 20;
+          updatecol1();
           break;
       case 's':
           yc -= 20;
+          updatecol1();
           break;
       case 'a' :
           xc -= 20;
+          updatecol1();
           break;
       case 'd' :
           xc += 20;
+          updatecol1();
           break;
       case 'q':
           hit(&hit11);
+          updatecol1();
         break;
       case 'e' :
           hit(&hit12);
+          updatecol1();
         break;
 
     //keyboard binding for opponent 2
       case '8':
           yc2 += 20;
+          updatecol2();
           break;
       case '5':
           yc2 -= 20;
+          updatecol2();
           break;
       case '4' :
           xc2 -= 20;
+          updatecol2();
           break;
       case '6' :
           xc2 += 20;
+          updatecol2();
           break;
       case '7':
           hit(&hit21);
@@ -293,30 +319,41 @@ void keyboard(unsigned char k, int x ,int y){
 
 void hit(int *hit){
   if(*hit){
-          *hit = 0;
+     *hit = 0;
+  }
+  else{
+    *hit =1;
+    
+    //checking for punches from opponent 1
+    short int punch1 = (body.hnds11.x2+xc+(hit11*40) > oppo2ColsnBndryx2 && body.hnds11.x2+xc+(hit11*40) < oppo2ColsnBndryx1);
+    short int punch2 = (body.hnds22.x2+xc+(hit12*40) > oppo2ColsnBndryx2 && body.hnds22.x2+xc+(hit12*40) < oppo2ColsnBndryx1);
+    //printf("hands = %d punch1 = %d and punch2  =%d\n",body.hnds11.x2 , punch1 , punch2);
+    if(punch1*hit11 || punch2*hit12){
+      hlth2 += 10;
+      //printf("it was a hit\n");
+      if (hlth2==150)
+      {
+        won = 1;
+        printf("opponent 1 won\n");
+          return;
         }
-        else{
-          *hit =1;
-          
-          //checking for punches from opponent 1
-          short int punch1 = (body.hnds11.x2+xc+(hit11*40) > 580 && body.hnds11.x2+xc+(hit11*40) < 620);
-          short int punch2 = (body.hnds22.x2+xc+(hit12*40) > 580 && body.hnds22.x2+xc+(hit12*40) < 620);
-          //printf("hands = %d punch1 = %d and punch2  =%d\n",body.hnds11.x2 , punch1 , punch2);
-          if(punch1*hit11 || punch2*hit12){
-            hlth2 += 10;
-            //printf("it was a hit\n");
-            if (hlth2==150)
-            {
-              won = 1;
-              printf("opponent 1 won\n");
-            }
-            return;
-          }
+      }
 
-          //checking for punches from opponent 2
-          punch1 = (body2.hnds11.x2+xc+(hit21*40) > 580 && body2.hnds11.x2+xc+(hit21*40) < 620);
-          punch2 = (body2.hnds22.x2+xc+(hit22*40) > 580 && body2.hnds22.x2+xc+(hit22*40) < 620);
-        }
+    //checking for punches from opponent 2
+    punch1 = (body2.hnds11.x2+xc2-(hit21*40) > oppo1ColsnBndryx1 && body2.hnds11.x2+xc2-(hit21*40) < oppo1ColsnBndryx2);
+    punch2 = (body2.hnds22.x2+xc2-(hit22*40) > oppo1ColsnBndryx1 && body2.hnds22.x2+xc2-(hit22*40) < oppo1ColsnBndryx2);
+    printf("%f %f\n", body2.hnds11.x2+xc2+(hit21*40),oppo1ColsnBndryx2);
+    if(punch1*hit21 || punch2*hit22){
+      hlth += 10;
+      //printf("it was a hit\n");
+      if (hlth==150)
+      {
+        won = 1;
+        printf("opponent 2 won\n");
+      }
+      //return;
+    }
+  }
 }
 
 void print(int x, int y,int z, char *string)
@@ -332,3 +369,19 @@ void print(int x, int y,int z, char *string)
     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,string[i]);
   }
 };
+
+//update collision boundries of opponent 1
+void updatecol1(){
+  oppo1ColsnBndryx1 = body.hd1.x1+xc;
+  oppo1ColsnBndryy1 = body.hd1.y1+yc;
+  oppo1ColsnBndryx2 = body.hd1.x3+xc;
+  oppo1ColsnBndryy2 = body.hd1.y3+xc;
+}
+
+//updates collision boundries of opponent 2
+void updatecol2(){
+  oppo2ColsnBndryx1 = body2.hd1.x1+xc2;
+  oppo2ColsnBndryy1 = body2.hd1.y1+yc2;
+  oppo2ColsnBndryx2 = body2.hd1.x3+xc2;
+  oppo2ColsnBndryy2 = body2.hd1.y3+yc2;
+}
