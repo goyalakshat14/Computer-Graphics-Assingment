@@ -3,6 +3,7 @@
 #include <GL/gl.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 void inits();
 void init2D(float r, float g, float b);
@@ -12,12 +13,13 @@ void print(int x,int y,int z,char *);
 void hit(int *);
 void updatecol1();
 void updatecol2();
+void update();
 
-
-float xc=0,yc=0,xc2=0,yc2=0; 
-
+float xc=0,yc=-200,xc2=0,yc2=-200; 
+int r;
 char keypressed;
-
+time_t seconds;
+int second;
 int hit11 = 0, hit12 =0, hit21=0, hit22=0, hlth=0, hlth2=0, won=0, i;
 
 //collision boundries of opponent 1
@@ -58,6 +60,8 @@ void main(int argc, char *argv)
   //texture = LoadTexture("/home/akshat/program/Game(opengl)/Assets/lena512.bmp");
   //glBindTexture (GL_TEXTURE_2D, texture);
   glutDisplayFunc(display);
+  seconds =time(NULL);
+  glutIdleFunc(update);
   glutKeyboardFunc(keyboard);   // call keyboard() when key is hit
   glutMainLoop();
 }
@@ -126,14 +130,27 @@ void init2D(float r, float g, float b)
   gluOrtho2D(0.0,1000.0,0.0,1000.0);
 }
 
+void update(){
+    second = 60 -time(NULL)+seconds; 
+    //printf("%d %d\n", seconds);
+    glutPostRedisplay();
+}
+
 void display(void)
 {
   //sleep(100);
-  int r;     
+       
       glClear(GL_COLOR_BUFFER_BIT);
-      glColor3f(1.0,0.0,0.0); 
-      
+       
+      //clock
+  r++;
+  char buffer[20];
+  sprintf(buffer,"%d",second);
+    print(450,800,0,buffer);
+
+    if(!won){
       //opponent 1
+      glColor3f(1.0,0.0,0.0); 
       glBegin(GL_QUADS);
         //head
           glVertex2f(body.hd1.x1+xc,body.hd1.y1+yc);
@@ -248,6 +265,27 @@ void display(void)
         glVertex2f(850-hlth2,20);
       glEnd();
 
+      if(hit11){
+           //printf("taking it back %d\n",i);
+            hit(&hit11);
+            glutTimerFunc(150,display,1);
+        }
+      if(hit12){
+           //printf("taking it back %d\n",i);
+            hit(&hit12);
+            glutTimerFunc(150,display,1); 
+        }
+      if(hit21){
+           //printf("taking it back %d\n",i);
+            hit(&hit21);
+            glutTimerFunc(150,display,1);
+      }
+      if(hit22){
+           //printf("taking it back %d\n",i);
+            hit(&hit22);
+            glutTimerFunc(150,display,1);    
+      }
+    }else{
       if(won==1){
         print(450,500,0,"player 1 won");
 
@@ -256,38 +294,19 @@ void display(void)
         print(450,500,0,"player 2 won");
       }
 
-      if(hit11){
-           printf("taking it back %d\n",i);
-            hit(&hit11);
-          i++;
-            glutTimerFunc(150,display,1);
-          
-        }
-      if(hit12){
-           printf("taking it back %d\n",i);
-            hit(&hit12);
-          i++;
-            glutTimerFunc(150,display,1);
-          
-        }
-      if(hit21){
-           printf("taking it back %d\n",i);
-            hit(&hit21);
-          i++;
-            glutTimerFunc(150,display,1);
-          
-      }
-      if(hit22){
-           //printf("taking it back %d\n",i);
-            hit(&hit22);
-            glutTimerFunc(150,display,1);    
-      }
+      print(450,450,0,"press p to quit");
+
+    }
       glFlush();
 }
 
 void keyboard(unsigned char k, int x ,int y){
   keypressed = k;
   switch(k){
+
+    case 'p':
+      exit(0);
+      break;
     //keyboard binding for opponent 1
       case 'w':
           yc += 20;
