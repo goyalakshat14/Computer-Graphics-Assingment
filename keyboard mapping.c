@@ -16,13 +16,18 @@ void updatecol2();
 void update();
 void keyRelease(unsigned char k,int x, int y);
 
-float xc=0,yc=-200,xc2=0,yc2=-200; 
-int r;
-char keypressed;
+float xc=0,yc=-200,xc2=0,yc2=-200;
+
 time_t seconds;
 int second;
-int hit11 = 0, hit12 =0, hit21=0, hit22=0, hlth=0, hlth2=0, won=0, i;
+int hit11 = 0, hit12 =0, hit21=0, hit22=0, hlth=0, hlth2=0, won=-2, i;
+//bool* keyStates = new bool[256];
 
+
+char opponent1[50],opponent2[50];
+int op1,op2;
+
+char keypressed;
 //collision boundries of opponent 1
 float oppo1ColsnBndryx1 = 0 ,oppo1ColsnBndryy1 = 0, oppo1ColsnBndryx2 = 0,oppo1ColsnBndryy2 = 0;
 
@@ -61,7 +66,7 @@ void main(int argc, char *argv)
   //texture = LoadTexture("/home/akshat/program/Game(opengl)/Assets/lena512.bmp");
   //glBindTexture (GL_TEXTURE_2D, texture);
   glutDisplayFunc(display);
-  seconds =time(NULL);
+  
   glutIdleFunc(update);
   glutKeyboardUpFunc(keyRelease);
   glutKeyboardFunc(keyPressed);   // call keyboard() when key is hit
@@ -148,15 +153,25 @@ void update(){
 }
 
 void display(void)
-{      
-      glClear(GL_COLOR_BUFFER_BIT);
+{   
+    //keyOperation();
+
+    glClear(GL_COLOR_BUFFER_BIT);
        
-  //clock
+  
+    if(won==-2){
+      print(400,800,0,"enter name of opponent 1");
+      print(400,750,0,opponent1);
+    }
+    else if(won==-1){
+      print(400,800,0,"enter name of opponent 2");
+      print(400,750,0,opponent2); 
+    }
+    else if(won==0){
+      //clock
     char buffer[20];
     sprintf(buffer,"%d",second);
     print(450,800,0,buffer);
-  
-    if(!won){
       //opponent 1
       glColor3f(1.0,0.0,0.0); 
       glBegin(GL_QUADS);
@@ -232,69 +247,51 @@ void display(void)
           glVertex2f(body2.trunk.x2+xc2,body2.trunk.y2+yc2);
 
       glEnd();
-      
-      
-      glColor3f(0.0,1.0,0.0);      
-      
       //health meter opponent 1
-      glBegin(GL_LINE_LOOP);
-      
-        glVertex2f(150,40);
-        glVertex2f(300,40);
-        glVertex2f(300,20);
-        glVertex2f(150,20);
+        glColor3f(0.0,1.0,0.0);  
+        
+        //name of opponent 1
+        print(150,50,0,opponent1);
+        
+        glBegin(GL_LINE_LOOP);
+        
+          glVertex2f(150,40);
+          glVertex2f(300,40);
+          glVertex2f(300,20);
+          glVertex2f(150,20);
 
-      glEnd();
+        glEnd();
+        
+        glColor3f(0.0,1.0,1.0);
+        glBegin(GL_QUADS);
+          glVertex2f(150+hlth,40);
+          glVertex2f(300,40);
+          glVertex2f(300,20);
+          glVertex2f(150+hlth,20);
+        glEnd();      
       
-      glColor3f(0.0,1.0,1.0);
-      glBegin(GL_QUADS);
-        glVertex2f(150+hlth,40);
-        glVertex2f(300,40);
-        glVertex2f(300,20);
-        glVertex2f(150+hlth,20);
-      glEnd();      
       
       //health meter opponent 2
-      glColor3f(0.0,1.0,0.0);
-      glBegin(GL_LINE_LOOP);
-      
-        glVertex2f(850,40);
-        glVertex2f(700,40);
-        glVertex2f(700,20);
-        glVertex2f(850,20);
+        glColor3f(0.0,1.0,0.0);
+        
+        //name of opponent 2
+        print(700,50,0,opponent2);
+        glBegin(GL_LINE_LOOP);
+        
+          glVertex2f(850,40);
+          glVertex2f(700,40);
+          glVertex2f(700,20);
+          glVertex2f(850,20);
 
-      glEnd();
+        glEnd();
 
-      glColor3f(0.0,1.0,1.0);
-      glBegin(GL_QUADS);
-        glVertex2f(850-hlth2,40);
-        glVertex2f(700,40);
-        glVertex2f(700,20);
-        glVertex2f(850-hlth2,20);
-      glEnd();
-
-      /*
-      if(hit11){
-           //printf("taking it back %d\n",i);
-            glutTimerFunc(150,display,1);
-            hit(&hit11);
-        }
-      if(hit12){
-           //printf("taking it back %d\n",i);
-            
-            glutTimerFunc(150,display,1);
-            hit(&hit12); 
-        }
-      if(hit21){
-           //printf("taking it back %d\n",i);
-            hit(&hit21);
-            glutTimerFunc(150,display,1);
-      }
-      if(hit22){
-           //printf("taking it back %d\n",i);
-            hit(&hit22);
-            glutTimerFunc(150,display,1);    
-      }*/
+        glColor3f(0.0,1.0,1.0);
+        glBegin(GL_QUADS);
+          glVertex2f(850-hlth2,40);
+          glVertex2f(700,40);
+          glVertex2f(700,20);
+          glVertex2f(850-hlth2,20);
+        glEnd();
     }else{
       if(won==1){
         print(450,500,0,"player 1 won");
@@ -303,19 +300,53 @@ void display(void)
       if(won ==2){
         print(450,500,0,"player 2 won");
       }
-      print(450,450,0,"press p to quit");
+      print(450,450,0,"press ESC to quit");
 
     }
       glFlush();
 }
 
 void keyPressed(unsigned char k, int x ,int y){
-  keypressed = k;
-  switch(k){
+  //keyStates[k] = true;
+if(k==27){
+  exit(0);
+}
 
-    case 'p':
-      exit(0);
+if(won==-2){
+  switch(k){
+    case 8:
+      op1--;
+      opponent1[op1]='\0';
       break;
+    case 13:
+      won++;
+      break; 
+    default:
+      opponent1[op1]=k;
+      op1++;
+      break;
+
+  }
+}
+else if(won==-1){
+  switch(k){
+    case 8:
+      op2--;
+      opponent2[op2]='\0';
+      break;
+    case 13:
+    seconds =time(NULL);
+      won++;
+      break; 
+    default:
+      opponent2[op2]=k;
+      op2++;
+      break;
+
+  }
+}
+else if(won==0){
+  switch(k){
     //keyboard binding for opponent 1
       case 'w':
           yc += 20;
@@ -369,6 +400,7 @@ void keyPressed(unsigned char k, int x ,int y){
     default : printf("wrong input\n");
       break;
   }
+}
   glutPostRedisplay();
   
 }
