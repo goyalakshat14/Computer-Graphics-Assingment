@@ -8,12 +8,13 @@
 void inits();
 void init2D(float r, float g, float b);
 void display(void);
-void keyboard(unsigned char k,int x, int y);
+void keyPressed(unsigned char k,int x, int y);
 void print(int x,int y,int z,char *);
 void hit(int *);
 void updatecol1();
 void updatecol2();
 void update();
+void keyRelease(unsigned char k,int x, int y);
 
 float xc=0,yc=-200,xc2=0,yc2=-200; 
 int r;
@@ -62,7 +63,8 @@ void main(int argc, char *argv)
   glutDisplayFunc(display);
   seconds =time(NULL);
   glutIdleFunc(update);
-  glutKeyboardFunc(keyboard);   // call keyboard() when key is hit
+  glutKeyboardUpFunc(keyRelease);
+  glutKeyboardFunc(keyPressed);   // call keyboard() when key is hit
   glutMainLoop();
 }
 
@@ -131,23 +133,29 @@ void init2D(float r, float g, float b)
 }
 
 void update(){
-    second = 60 -time(NULL)+seconds; 
+    second = 90-time(NULL)+seconds;
+    if(!second){
+      if(hlth<hlth2){
+        won=1;
+      }
+      else{
+        won=2;
+      }
+    }
     //printf("%d %d\n", seconds);
-    glutPostRedisplay();
+    
+    glutTimerFunc(600,glutPostRedisplay,0);
 }
 
 void display(void)
-{
-  //sleep(100);
-       
+{      
       glClear(GL_COLOR_BUFFER_BIT);
        
-      //clock
-  r++;
-  char buffer[20];
-  sprintf(buffer,"%d",second);
+  //clock
+    char buffer[20];
+    sprintf(buffer,"%d",second);
     print(450,800,0,buffer);
-
+  
     if(!won){
       //opponent 1
       glColor3f(1.0,0.0,0.0); 
@@ -265,15 +273,17 @@ void display(void)
         glVertex2f(850-hlth2,20);
       glEnd();
 
+      /*
       if(hit11){
            //printf("taking it back %d\n",i);
-            hit(&hit11);
             glutTimerFunc(150,display,1);
+            hit(&hit11);
         }
       if(hit12){
            //printf("taking it back %d\n",i);
-            hit(&hit12);
-            glutTimerFunc(150,display,1); 
+            
+            glutTimerFunc(150,display,1);
+            hit(&hit12); 
         }
       if(hit21){
            //printf("taking it back %d\n",i);
@@ -284,7 +294,7 @@ void display(void)
            //printf("taking it back %d\n",i);
             hit(&hit22);
             glutTimerFunc(150,display,1);    
-      }
+      }*/
     }else{
       if(won==1){
         print(450,500,0,"player 1 won");
@@ -293,14 +303,13 @@ void display(void)
       if(won ==2){
         print(450,500,0,"player 2 won");
       }
-
       print(450,450,0,"press p to quit");
 
     }
       glFlush();
 }
 
-void keyboard(unsigned char k, int x ,int y){
+void keyPressed(unsigned char k, int x ,int y){
   keypressed = k;
   switch(k){
 
@@ -362,6 +371,29 @@ void keyboard(unsigned char k, int x ,int y){
   }
   glutPostRedisplay();
   
+}
+
+void keyRelease(unsigned char k,int x, int y){
+
+  switch(k){
+    case 'q':
+          hit(&hit11);
+          updatecol1();
+        break;
+    case 'e' :
+          hit(&hit12);
+          updatecol1();
+        break;
+
+    case '7':
+          hit(&hit21);
+        break;
+    case '9' :
+          hit(&hit22);
+        break;
+
+  }
+  glutPostRedisplay();
 }
 
 void hit(int *hit){
