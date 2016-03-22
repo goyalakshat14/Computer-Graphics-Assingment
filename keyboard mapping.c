@@ -20,7 +20,7 @@ float xc=0,yc=-200,xc2=0,yc2=-200;
 
 time_t seconds;
 int second;
-int hit11 = 0, hit12 =0, hit21=0, hit22=0, hlth=0, hlth2=0, won=-2, i;
+int hit11 = 0, hit12 =0, hit21=0, hit22=0, hlth=0, hlth2=0, won=-3, i;
 //bool* keyStates = new bool[256];
 
 
@@ -159,13 +159,21 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT);
        
   
-    if(won==-2){
+    if(won==-3){
       print(400,800,0,"enter name of opponent 1");
       print(400,750,0,opponent1);
     }
-    else if(won==-1){
+    else if(won==-2){
       print(400,800,0,"enter name of opponent 2");
       print(400,750,0,opponent2); 
+    }
+    else if(won==-1){
+      print(450,800,0,"Instruction");
+      print(100,750,0,"opponent 1 use w/a/s/d to move around");
+      print(150,700,0,"opponent 1 use q/e to punch");
+      print(500,750,0,"opponent 2 use 8/5/4/6 to move around");
+      print(500,700,0,"opponent 2 use 7/9 to punch");
+      print(430,650,0,"use ESC to exit");
     }
     else if(won==0){
       //clock
@@ -312,7 +320,7 @@ if(k==27){
   exit(0);
 }
 
-if(won==-2){
+if(won==-3){
   switch(k){
     case 8:
       op1--;
@@ -328,14 +336,13 @@ if(won==-2){
 
   }
 }
-else if(won==-1){
+else if(won==-2){
   switch(k){
     case 8:
       op2--;
       opponent2[op2]='\0';
       break;
     case 13:
-    seconds =time(NULL);
       won++;
       break; 
     default:
@@ -345,6 +352,12 @@ else if(won==-1){
 
   }
 }
+else if(won==-1){
+  if(k==13){
+    seconds =time(NULL);
+      won++;
+    }
+  }
 else if(won==0){
   switch(k){
     //keyboard binding for opponent 1
