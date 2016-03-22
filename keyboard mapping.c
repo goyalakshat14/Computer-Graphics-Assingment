@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ncurses.h>
 
 void inits();
 void init2D(float r, float g, float b);
@@ -52,9 +53,8 @@ typedef struct bod{
 
 Body body,body2;
 
-void main(int argc, char *argv)
+int main(int argc, char *argv)
 {
-
    GLuint texture;
   glutInit(&argc,argv);
   glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
@@ -168,18 +168,22 @@ void display(void)
       print(400,750,0,opponent2); 
     }
     else if(won==-1){
+      glColor3f(0.0,1.0,0.0);
       print(450,800,0,"Instruction");
+      glColor3f(0.0,0.0,1.0);
       print(100,750,0,"opponent 1 use w/a/s/d to move around");
       print(150,700,0,"opponent 1 use q/e to punch");
       print(500,750,0,"opponent 2 use 8/5/4/6 to move around");
       print(500,700,0,"opponent 2 use 7/9 to punch");
-      print(430,650,0,"use ESC to exit");
+      glColor3f(1.0,0.5,0.5);
+      print(390,650,0,"use ENTER to continue");
+      print(430,600,0,"use ESC to exit");
     }
     else if(won==0){
       //clock
     char buffer[20];
     sprintf(buffer,"%d",second);
-    print(450,800,0,buffer);
+    print(480,800,0,buffer);
       //opponent 1
       glColor3f(1.0,0.0,0.0); 
       glBegin(GL_QUADS);
@@ -378,10 +382,12 @@ else if(won==0){
           updatecol1();
           break;
       case 'q':
+      //beep();
           hit(&hit11);
           updatecol1();
         break;
       case 'e' :
+      //beep();
           hit(&hit12);
           updatecol1();
         break;
