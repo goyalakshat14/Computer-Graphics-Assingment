@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <ncurses.h>
 
 void inits();
 void init2D(float r, float g, float b);
@@ -426,6 +425,7 @@ else if(won==0){
 
 void keyRelease(unsigned char k,int x, int y){
 
+if(won==0){
   switch(k){
     case 'q':
           hit(&hit11);
@@ -438,13 +438,16 @@ void keyRelease(unsigned char k,int x, int y){
 
     case '7':
           hit(&hit21);
+          updatecol2();
         break;
     case '9' :
           hit(&hit22);
+          updatecol2();
         break;
 
-  }
+    }
   glutPostRedisplay();
+  }
 }
 
 void hit(int *hit){
