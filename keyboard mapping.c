@@ -16,7 +16,7 @@ void updatecol2();
 void update();
 void keyRelease(unsigned char k,int x, int y);
 
-float xc=0,yc=-200,xc2=0,yc2=-200;
+float xc=0,yc=-250,xc2=0,yc2=-250;
 
 time_t seconds;
 int second;
@@ -54,11 +54,10 @@ Body body,body2;
 
 int main(int argc, char *argv)
 {
-   GLuint texture;
   glutInit(&argc,argv);
   glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
   glutInitWindowSize(1000,1000);
-  glutInitWindowPosition(200,200);
+  glutInitWindowPosition(-1,-1);
   glutCreateWindow("Point&lines");
   init2D(0.0,0.0,0.0);
   inits();
@@ -168,15 +167,15 @@ void display(void)
     }
     else if(won==-1){
       glColor3f(0.0,1.0,0.0);
-      print(450,800,0,"Instruction");
-      glColor3f(0.0,0.0,1.0);
+      print(430,800,0,"Instruction");
+      glColor3f(0.0,0.5,1.0);
       print(100,750,0,"opponent 1 use w/a/s/d to move around");
       print(150,700,0,"opponent 1 use q/e to punch");
       print(500,750,0,"opponent 2 use 8/5/4/6 to move around");
       print(500,700,0,"opponent 2 use 7/9 to punch");
       glColor3f(1.0,0.5,0.5);
-      print(390,650,0,"use ENTER to continue");
-      print(430,600,0,"use ESC to exit");
+      print(380,650,0,"use ENTER to continue");
+      print(415,600,0,"use ESC to exit");
     }
     else if(won==0){
       //clock
@@ -262,23 +261,23 @@ void display(void)
         glColor3f(0.0,1.0,0.0);  
         
         //name of opponent 1
-        print(150,50,0,opponent1);
+        print(100,765,0,opponent1);
         
         glBegin(GL_LINE_LOOP);
         
-          glVertex2f(150,40);
-          glVertex2f(300,40);
-          glVertex2f(300,20);
-          glVertex2f(150,20);
+          glVertex2f(100,810);
+          glVertex2f(300,810);
+          glVertex2f(300,790);
+          glVertex2f(100,790);
 
         glEnd();
         
         glColor3f(0.0,1.0,1.0);
         glBegin(GL_QUADS);
-          glVertex2f(150+hlth,40);
-          glVertex2f(300,40);
-          glVertex2f(300,20);
-          glVertex2f(150+hlth,20);
+          glVertex2f(100+hlth,810);
+          glVertex2f(300,810);
+          glVertex2f(300,790);
+          glVertex2f(100+hlth,790);
         glEnd();      
       
       
@@ -286,32 +285,34 @@ void display(void)
         glColor3f(0.0,1.0,0.0);
         
         //name of opponent 2
-        print(700,50,0,opponent2);
+        print(700,765,0,opponent2);
         glBegin(GL_LINE_LOOP);
         
-          glVertex2f(850,40);
-          glVertex2f(700,40);
-          glVertex2f(700,20);
-          glVertex2f(850,20);
+          glVertex2f(900,810);
+          glVertex2f(700,810);
+          glVertex2f(700,790);
+          glVertex2f(900,790);
 
         glEnd();
 
         glColor3f(0.0,1.0,1.0);
         glBegin(GL_QUADS);
-          glVertex2f(850-hlth2,40);
-          glVertex2f(700,40);
-          glVertex2f(700,20);
-          glVertex2f(850-hlth2,20);
+          glVertex2f(900-hlth2,810);
+          glVertex2f(700,810);
+          glVertex2f(700,790);
+          glVertex2f(900-hlth2,790);
         glEnd();
     }else{
+    	glColor3f(1.0,1.0,0.0);
+    	print(425,550,0,"And the Winner is");
       if(won==1){
-        print(450,500,0,"player 1 won");
+        print(465,500,0,opponent1);
 
       }
       if(won ==2){
-        print(450,500,0,"player 2 won");
+        print(450,500,0,opponent2);
       }
-      print(450,450,0,"press ESC to quit");
+      print(430,450,0,"press ESC to quit");
 
     }
       glFlush();
@@ -359,6 +360,7 @@ else if(won==-1){
   if(k==13){
     seconds =time(NULL);
       won++;
+      glClearColor(0,0,0,0);
     }
   }
 else if(won==0){
@@ -453,21 +455,23 @@ if(won==0){
 void hit(int *hit){
   if(*hit){
      *hit = 0;
+     glClearColor(0,0,0,0);
   }
   else{
     *hit =1;
-    
     //checking for punches from opponent 1
     short int punch1 = (body.hnds11.x2+xc+(hit11*40) > oppo2ColsnBndryx2 && body.hnds11.x2+xc+(hit11*40) < oppo2ColsnBndryx1);
     short int punch2 = (body.hnds22.x2+xc+(hit12*40) > oppo2ColsnBndryx2 && body.hnds22.x2+xc+(hit12*40) < oppo2ColsnBndryx1);
     //printf("hands = %d punch1 = %d and punch2  =%d\n",body.hnds11.x2 , punch1 , punch2);
     if(punch1*hit11 || punch2*hit12){
       hlth2 += 10;
+      glClearColor(0.53,0.027,0.027,0.2f);
       //printf("it was a hit\n");
-      if (hlth2==150)
+      if (hlth2==200)
       {
         won = 1;
         printf("opponent 1 won\n");
+
           //return;
         }
       }
@@ -478,8 +482,9 @@ void hit(int *hit){
     printf("%f %f\n", body2.hnds11.x2+xc2+(hit21*40),oppo1ColsnBndryx2);
     if(punch1*hit21 || punch2*hit22){
       hlth += 10;
+      glClearColor(0.53,0.027,0.027,0.2f);
       //printf("it was a hit\n");
-      if (hlth==150)
+      if (hlth==200)
       {
         won = 2;
         printf("opponent 2 won\n");
@@ -499,7 +504,7 @@ void print(int x, int y,int z, char *string)
   //loop to display character by character
   for (i = 0; i < len; i++)
   {
-    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,string[i]);
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,string[i]);
   }
 };
 
