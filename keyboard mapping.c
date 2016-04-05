@@ -486,7 +486,7 @@ void hit(int *hit){
       hlth += 10;
       glClearColor(0.53,0.027,0.027,0.2f);
       xc -=30;
-      updatecol2();
+      updatecol1();
       //printf("it was a hit\n");
       if (hlth==200)
       {
