@@ -466,6 +466,8 @@ void hit(int *hit){
     if(punch1*hit11 || punch2*hit12){
       hlth2 += 10;
       glClearColor(0.53,0.027,0.027,0.2f);
+      xc2 +=30;
+      updatecol2();
       //printf("it was a hit\n");
       if (hlth2==200)
       {
@@ -483,6 +485,8 @@ void hit(int *hit){
     if(punch1*hit21 || punch2*hit22){
       hlth += 10;
       glClearColor(0.53,0.027,0.027,0.2f);
+      xc -=30;
+      updatecol2();
       //printf("it was a hit\n");
       if (hlth==200)
       {
